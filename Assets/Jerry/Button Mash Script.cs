@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,31 +9,51 @@ public class ButtonMashScript : MonoBehaviour
     // Start is called before the first frame update
 
     bool clicked = false;
-    double timeWithoutClicking;
-    [SerializeField] float speed = 5.0f;
-    float maxSpeed = 10.0f;
-    float minSpeed = 1.0f;
+    double timeSinceLastSpeedChange;
+    [SerializeField] float speed;
+    float maxSpeed = 2.0f;
+    float minSpeed = 0.2f;
+
+    [SerializeField] private float dist;
+    [SerializeField] private float bobAmp;
+    [SerializeField] private float bobFreq;
+    [SerializeField] private float debugOffset;
+    [SerializeField] private bool isCamLocked;
+    private float currentPlacementAngle;
+    private float angleAtHome;
 
     void Start()
     {
-        timeWithoutClicking = Time.timeAsDouble * 1000;
+        timeSinceLastSpeedChange = 0;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-        double currentTime = Time.timeAsDouble * 1000;
+        timeSinceLastSpeedChange += Time.deltaTime;
 
         if (Input.GetMouseButtonDown(0) && (speed < maxSpeed)) {
-            speed += 0.5f;
-            timeWithoutClicking = Time.timeAsDouble * 1000;
+            speed += 0.1f;
+            timeSinceLastSpeedChange = 0;
+        }
+        // Exponential rate of decrease since last click. 
+        if (timeSinceLastSpeedChange > 0.01 && (speed > minSpeed)) {
+            speed -= 0.002f;
+            timeSinceLastSpeedChange = 0;
         }
 
-        if (!Input.GetMouseButtonDown (0) && (currentTime - timeWithoutClicking > 30) && (speed > minSpeed)) {
-            speed -= 0.1f;
-            timeWithoutClicking = Time.timeAsDouble * 1000;
+        currentPlacementAngle += speed * Time.deltaTime;
+
+        Vector3 oldPos = transform.position;
+        transform.position = new Vector3((dist * Mathf.Sin(currentPlacementAngle)),
+                                        bobAmp * Mathf.Sin(currentPlacementAngle / bobFreq) + bobAmp,
+                                        (dist * Mathf.Cos(currentPlacementAngle)));
+        transform.LookAt(Camera.main.transform.position);
+
+        if (isCamLocked)
+        {
+            Camera.main.transform.LookAt(transform.position);
         }
     }
 }

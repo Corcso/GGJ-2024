@@ -434,7 +434,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1755378418}
   - component: {fileID: 1755378417}
-  - component: {fileID: 1755378416}
   m_Layer: 0
   m_Name: Chasee
   m_TagString: Untagged
@@ -442,24 +441,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1755378416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1755378415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a72e6b14d3b78dc4ab6809d8b7504ade, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  dist: 5
-  bobAmp: 0.2
-  bobFreq: 0.3
-  debugOffset: 0
-  isCamLocked: 1
 --- !u!212 &1755378417
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -538,7 +519,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1847099945}
   - component: {fileID: 1847099944}
-  - component: {fileID: 1847099943}
+  - component: {fileID: 1847099946}
   m_Layer: 0
   m_Name: Chaser
   m_TagString: Untagged
@@ -546,24 +527,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1847099943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847099942}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a72e6b14d3b78dc4ab6809d8b7504ade, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  dist: 5
-  bobAmp: 0.2
-  bobFreq: 0.3
-  debugOffset: 0.3
-  isCamLocked: 0
 --- !u!212 &1847099944
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -632,6 +595,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1847099946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847099942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978abccc6b4179441b6b141a045d6153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0
+  dist: 10
+  bobAmp: 0.2
+  bobFreq: 0.3
+  debugOffset: 0
+  isCamLocked: 1
 --- !u!1 &1942817170
 GameObject:
   m_ObjectHideFlags: 0
