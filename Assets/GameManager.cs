@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
         CHOOSING,
         CHASING,
         CAUGHT_ANIMATION,
-        ESCAPE_ANIMATION
+        ESCAPE_ANIMATION,
+        WALKING
     }
     public GameState currentGameState;
     public bool stateChangedThisFrame; // Serialized field for now
@@ -26,7 +27,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] Color[] coloursOfPlayers; // Serialized field for now
     [SerializeField] int chaserIndex;
     [SerializeField] int chaseeIndex;
+    [SerializeField] int chosenPlayer;
+    [SerializeField] int noOfDucks = 0;
+    [SerializeField] bool inMovingTransition;
+    float angleMovedThisSegment;
+
     Vector3 camLookPosition;
+
 
     // Chase Round
     public KeyCode[] chaseSceneKeys;
@@ -45,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] public float chaseMinDeceleration;
     [SerializeField] public float chaseDecelerationGradient;
+    [SerializeField] GameObject choosingButtonPrefab;
 
     // GUI Popups
     [SerializeField] RectTransform caughtPopupText;
@@ -59,6 +67,7 @@ public class GameManager : MonoBehaviour
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
+        playersInPlay = new PlayerController[currentPlayerCount];
 
         //spawnPlayers();
     }
@@ -98,6 +107,51 @@ public class GameManager : MonoBehaviour
             timeInGuiPopup = 0;
             midPopupRan = false;
         }
+        if (currentGameState == GameState.WALKING)
+        {
+            //if it player angle is NOT equal to chosenPlayer * (2 pi / noOfPlayers)
+                //move player by 2 pi / noOfPlayers
+            //if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle)
+            //{
+            //    //change enum to chasing
+            //    currentGameState = GameState.CHASING;
+               
+            //}
+            if ((noOfDucks == chosenPlayer - 2) && !inMovingTransition)
+            {
+                //move chasee by 2 pi / noOfPlayers
+                currentGameState = GameState.CHASING;
+            }
+            else
+            {
+                if (inMovingTransition == false)
+                {
+                    noOfDucks++;
+                    //playersInPlay[chaseeIndex].currentPlacementAngle += (3.1415f * 2) / currentPlayerCount;
+                    inMovingTransition = true;
+                    angleMovedThisSegment = 0;
+                    //move it normally somehow?
+                    //Maybe the above if statement could take place when the angle is equal to noOfDucks - 1
+                }
+                else
+                {
+                    angleMovedThisSegment += (0.6f * Time.deltaTime);
+                    playersInPlay[chaseeIndex].currentPlacementAngle += (0.6f * Time.deltaTime);
+                    playersInPlay[chaseeIndex].transform.position = new Vector3((sitRadius * Mathf.Sin(playersInPlay[chaseeIndex].currentPlacementAngle)),
+                                                0,
+                                                (sitRadius * Mathf.Cos(playersInPlay[chaseeIndex].currentPlacementAngle)));
+
+                    playersInPlay[chaseeIndex].transform.LookAt(Camera.main.transform.position);
+
+
+                    if (angleMovedThisSegment >= (2 * 3.1415) / noOfDucks){
+                        inMovingTransition = false;
+                    }
+                    
+                }
+            }
+        }
+
         if (currentGameState == GameState.CAUGHT_ANIMATION) {
             timeInGuiPopup += Time.deltaTime;
             caughtPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
@@ -143,6 +197,7 @@ public class GameManager : MonoBehaviour
         }
         Camera.main.transform.LookAt(camLookPosition);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
+
     }
 
     private void LateUpdate()
@@ -196,7 +251,7 @@ public class GameManager : MonoBehaviour
             GameObject newPlayer = Instantiate(playersToSpawnPrefabs[i]);
             PlayerController playerController = newPlayer.GetComponent<PlayerController>();
             playerController.playerIndex = i;
-
+            playersInPlay[i] = playerController;
             if (i != indexOfChasee)
             {
                 // Set player location and position
