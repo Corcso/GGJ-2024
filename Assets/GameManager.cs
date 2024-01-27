@@ -7,9 +7,16 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     public enum GameState { 
         CHOOSING,
-        CHASING
+        CHASING,
+        CAUGHT_ANIMATION,
+        ESCAPE_ANIMATION
     }
     public GameState currentGameState;
+
+    // Player registry
+    [SerializeField] PlayerController[] playersInPlay; // Serialized field for now
+    [SerializeField] int chaserIndex;
+    [SerializeField] int chaseeIndex;
 
     // Game Settings
     [SerializeField] public float chaseRadius;
@@ -31,7 +38,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentGameState == GameState.CHASING) {
+            // Chaser has caught chasee if they are overlapping
+            if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle) {
+                currentGameState = GameState.CAUGHT_ANIMATION;
+            }
+        }
     }
 
 }

@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float chaseAngularSpeed;
 
     [SerializeField] private float debugOffset;
-    [SerializeField] private float currentPlacementAngle;
+    public float currentPlacementAngle;
 
     private float angleAtHome;
 
@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         timeSinceLastSpeedIncrease = 0;
         timeSinceLastSpeedChange = 0;
+        currentPlacementAngle = -debugOffset;
         angleAtHome = 0;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
