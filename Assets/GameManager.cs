@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
         CHOOSING,
         CHASING,
         CAUGHT_ANIMATION,
-        ESCAPE_ANIMATION
+        ESCAPE_ANIMATION,
+        WALKING
     }
     public GameState currentGameState;
     [SerializeField] bool stateChangedThisFrame; // Serialized field for now
@@ -25,6 +26,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Color[] coloursOfPlayers; // Serialized field for now
     [SerializeField] int chaserIndex;
     [SerializeField] int chaseeIndex;
+    [SerializeField] int chosenPlayer;
+    [SerializeField] int noOfDucks = 0;
+    [SerializeField] bool inMovingTransition;
+    float angleMovedThisSegment;
 
     // Chase Round
     public KeyCode[] chaseSceneKeys;
@@ -43,6 +48,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] public float chaseMinDeceleration;
     [SerializeField] public float chaseDecelerationGradient;
+    [SerializeField] GameObject choosingButtonPrefab;
 
     void Start()
     {
@@ -52,6 +58,7 @@ public class GameManager : MonoBehaviour
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
+        playersInPlay = new PlayerController[currentPlayerCount];
 
         spawnPlayers();
     }
@@ -77,6 +84,51 @@ public class GameManager : MonoBehaviour
                 {
                     chaseSceneKeys[i] = KeyCode.None;
                     numberOfConsecutivePresses[i] = 0;
+                }
+            }
+        }
+
+        if (currentGameState == GameState.WALKING)
+        {
+            //if it player angle is NOT equal to chosenPlayer * (2 pi / noOfPlayers)
+                //move player by 2 pi / noOfPlayers
+            //if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle)
+            //{
+            //    //change enum to chasing
+            //    currentGameState = GameState.CHASING;
+               
+            //}
+            if ((noOfDucks == chosenPlayer - 2) && !inMovingTransition)
+            {
+                //move chasee by 2 pi / noOfPlayers
+                currentGameState = GameState.CHASING;
+            }
+            else
+            {
+                if (inMovingTransition == false)
+                {
+                    noOfDucks++;
+                    //playersInPlay[chaseeIndex].currentPlacementAngle += (3.1415f * 2) / currentPlayerCount;
+                    inMovingTransition = true;
+                    angleMovedThisSegment = 0;
+                    //move it normally somehow?
+                    //Maybe the above if statement could take place when the angle is equal to noOfDucks - 1
+                }
+                else
+                {
+                    angleMovedThisSegment += (0.6f * Time.deltaTime);
+                    playersInPlay[chaseeIndex].currentPlacementAngle += (0.6f * Time.deltaTime);
+                    playersInPlay[chaseeIndex].transform.position = new Vector3((sitRadius * Mathf.Sin(playersInPlay[chaseeIndex].currentPlacementAngle)),
+                                                0,
+                                                (sitRadius * Mathf.Cos(playersInPlay[chaseeIndex].currentPlacementAngle)));
+
+                    playersInPlay[chaseeIndex].transform.LookAt(Camera.main.transform.position);
+
+
+                    if (angleMovedThisSegment >= (2 * 3.1415) / noOfDucks){
+                        inMovingTransition = false;
+                    }
+                    
                 }
             }
         }
@@ -128,7 +180,7 @@ public class GameManager : MonoBehaviour
             GameObject newPlayer = Instantiate(playersToSpawnPrefabs[i]);
             PlayerController playerController = newPlayer.GetComponent<PlayerController>();
             playerController.playerIndex = i;
-
+            playersInPlay[i] = playerController;
             if (i != indexOfChasee)
             {
                 // Set player location and position

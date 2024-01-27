@@ -73,6 +73,5 @@ public class PlayerController : MonoBehaviour
                 Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
             }
         }
-
     }
 }
