@@ -31,11 +31,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If currently in chase
         if (gameManager.currentGameState == GameManager.GameState.CHASING && currentPlacementAngle < angleAtHome + (200 * 3.141f))
         {
+            // Incrase both the time since last change and the time since last speed increase
             timeSinceLastSpeedChange += Time.deltaTime;
             timeSinceLastSpeedIncrease += Time.deltaTime;
 
+            // If button pressed increase speed
             if (Input.GetMouseButtonDown(0) && (chaseAngularSpeed < gameManager.chaseMaxAngSpeed))
             {
                 chaseAngularSpeed += 0.1f;
@@ -49,8 +52,10 @@ public class PlayerController : MonoBehaviour
                 timeSinceLastSpeedChange = 0;
             }
 
+            // Apply speed
             currentPlacementAngle += chaseAngularSpeed * Time.deltaTime;
 
+            // Change player position and rotation based on angle
             Vector3 oldPos = transform.position;
             transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
                                             gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
@@ -58,6 +63,7 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(Camera.main.transform.position);
             transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
 
+            // If the player is selected as the camera target move the cam to them, maybe do this in game manager
             if (isCamLocked)
             {
                 Camera.main.transform.LookAt(transform.position);
