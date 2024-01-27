@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
         ESCAPE_ANIMATION
     }
     public GameState currentGameState;
-    [SerializeField] bool stateChangedThisFrame; // Serialized field for now
+    public bool stateChangedThisFrame; // Serialized field for now
 
     // Player registry
     [SerializeField] GameObject[] playersToSpawnPrefabs;
@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Color[] coloursOfPlayers; // Serialized field for now
     [SerializeField] int chaserIndex;
     [SerializeField] int chaseeIndex;
+    Vector3 camLookPosition;
 
     // Chase Round
     public KeyCode[] chaseSceneKeys;
@@ -47,13 +48,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Set initial game state
-        currentGameState = GameState.CHOOSING;
+        currentGameState = GameState.CHASING;
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
 
-        spawnPlayers();
+        //spawnPlayers();
     }
 
     // Update is called once per frame
@@ -66,12 +67,16 @@ public class GameManager : MonoBehaviour
 
                 assignNewKey(chaserIndex);
                 assignNewKey(chaseeIndex);
-            }
 
+                playersInPlay[chaserIndex].isChasee = false;
+                playersInPlay[chaseeIndex].isChasee = true;
+                playersInPlay[chaserIndex].inChase = true;
+                playersInPlay[chaseeIndex].inChase = true;
+            }
 
             // Chaser has caught chasee if they are overlapping
             if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle) {
-                currentGameState = GameState.CAUGHT_ANIMATION;
+                setGameState(GameState.CAUGHT_ANIMATION);
                 // Wipe chase keys
                 for (int i = 0; i < currentPlayerCount; i++)
                 {
@@ -79,7 +84,14 @@ public class GameManager : MonoBehaviour
                     numberOfConsecutivePresses[i] = 0;
                 }
             }
+
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
         }
+        if (currentGameState == GameState.CAUGHT_ANIMATION) {
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
+        }
+        Camera.main.transform.LookAt(camLookPosition);
+        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
     }
 
     public void countKeyPress(int playerIndex) {
