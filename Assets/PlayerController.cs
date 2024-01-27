@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
                                             gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
                                             (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
             transform.LookAt(Camera.main.transform.position);
+            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
 
             if (isCamLocked)
             {
