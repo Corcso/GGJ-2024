@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
+    // My player index
+    public int playerIndex;
     // Store game manager reference
     GameManager gameManager;
 
@@ -40,11 +41,12 @@ public class PlayerController : MonoBehaviour
             timeSinceLastSpeedIncrease += Time.deltaTime;
 
             // If button pressed increase speed
-            if (Input.GetMouseButtonDown(0) && (chaseAngularSpeed < gameManager.chaseMaxAngSpeed))
+            if (Input.GetKeyDown(gameManager.chaseSceneKeys[playerIndex]) && (chaseAngularSpeed < gameManager.chaseMaxAngSpeed))
             {
                 chaseAngularSpeed += 0.1f;
                 timeSinceLastSpeedChange = 0;
                 timeSinceLastSpeedIncrease = 0;
+                gameManager.countKeyPress(playerIndex);
             }
             // Exponential rate of decrease since last click. 
             if (timeSinceLastSpeedChange > 0.01 && (chaseAngularSpeed > gameManager.chaseMinAngSpeed))
