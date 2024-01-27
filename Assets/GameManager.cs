@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] bool stateChangedThisFrame; // Serialized field for now
 
     // Player registry
+    [SerializeField] GameObject[] playersToSpawnPrefabs;
     [SerializeField] int currentPlayerCount;
     [SerializeField] PlayerController[] playersInPlay; // Serialized field for now
     [SerializeField] Color[] coloursOfPlayers; // Serialized field for now
@@ -46,11 +47,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Set initial game state
-        currentGameState = GameState.CHASING;
+        currentGameState = GameState.CHOOSING;
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
+
+        spawnPlayers();
     }
 
     // Update is called once per frame
@@ -117,5 +120,32 @@ public class GameManager : MonoBehaviour
         newPopup.GetComponent<TextMeshProUGUI>().color = coloursOfPlayers[playerIndex];
         playerKeyPopups[playerIndex] = newPopup;
     }
+    void spawnPlayers() {
+        int indexOfChasee = Random.Range(0, currentPlayerCount);
 
+        for (int i = 0; i < currentPlayerCount; i++)
+        {
+            GameObject newPlayer = Instantiate(playersToSpawnPrefabs[i]);
+            PlayerController playerController = newPlayer.GetComponent<PlayerController>();
+            playerController.playerIndex = i;
+
+            if (i != indexOfChasee)
+            {
+                // Set player location and position
+                playerController.currentPlacementAngle = i * (2 * 3.1415f / (currentPlayerCount - 1));
+                newPlayer.transform.position = new Vector3((sitRadius * Mathf.Sin(playerController.currentPlacementAngle)),
+                                                0,
+                                                (sitRadius * Mathf.Cos(playerController.currentPlacementAngle)));
+
+                newPlayer.transform.LookAt(Camera.main.transform.position);
+            }
+            else {
+                // Set player location and position; 
+                playerController.currentPlacementAngle = 0;
+                newPlayer.transform.position = new Vector3(0, 0, chaseRadius);
+
+                newPlayer.transform.LookAt(Camera.main.transform.position);
+            }
+        }
+    }
 }
