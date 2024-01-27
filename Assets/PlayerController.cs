@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     GameManager gameManager;
 
     double timeSinceLastSpeedChange;
+    double timeSinceLastSpeedIncrease;
     [SerializeField] float chaseAngularSpeed;
 
     [SerializeField] private float debugOffset;
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        timeSinceLastSpeedIncrease = 0;
         timeSinceLastSpeedChange = 0;
         angleAtHome = 0;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -29,19 +31,21 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.currentGameState == GameManager.GameState.CHASING && currentPlacementAngle < angleAtHome + (2 * 3.141f))
+        if (gameManager.currentGameState == GameManager.GameState.CHASING && currentPlacementAngle < angleAtHome + (200 * 3.141f))
         {
             timeSinceLastSpeedChange += Time.deltaTime;
+            timeSinceLastSpeedIncrease += Time.deltaTime;
 
             if (Input.GetMouseButtonDown(0) && (chaseAngularSpeed < gameManager.chaseMaxAngSpeed))
             {
                 chaseAngularSpeed += 0.1f;
                 timeSinceLastSpeedChange = 0;
+                timeSinceLastSpeedIncrease = 0;
             }
             // Exponential rate of decrease since last click. 
             if (timeSinceLastSpeedChange > 0.01 && (chaseAngularSpeed > gameManager.chaseMinAngSpeed))
             {
-                chaseAngularSpeed -= 0.002f;
+                chaseAngularSpeed -= (gameManager.chaseMinDeceleration - 1 + Mathf.Exp(gameManager.chaseDecelerationGradient * ((float)timeSinceLastSpeedIncrease - gameManager.chaseMinAngSpeed)));
                 timeSinceLastSpeedChange = 0;
             }
 
@@ -56,6 +60,7 @@ public class PlayerController : MonoBehaviour
             if (isCamLocked)
             {
                 Camera.main.transform.LookAt(transform.position);
+                Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
             }
         }
 

@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public float chaseMinAngSpeed;
     [SerializeField] public float chaseMaxAngSpeed;
 
+    [SerializeField] public float chaseMinDeceleration;
+    [SerializeField] public float chaseDecelerationGradient;
+
     void Start()
     {
         // Set initial game state
