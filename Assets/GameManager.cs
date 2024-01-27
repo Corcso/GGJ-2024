@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -55,6 +56,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject choosingButtonPrefab;
     [SerializeField] Transform choosingButtonPanel;
 
+    // GUI Popups
+    [SerializeField] RectTransform caughtPopupText;
+    [SerializeField] RectTransform escapedPopupText;
+    float timeInGuiPopup;
+    bool midPopupRan;
     void Start()
     {
         // Set initial game state
@@ -81,7 +87,6 @@ public class GameManager : MonoBehaviour
         if (currentGameState == GameState.CHASING) {
             // Perform chase set up if just happened
             if (stateChangedThisFrame) { 
-                stateChangedThisFrame = false;
 
                 assignNewKey(chaserIndex);
                 assignNewKey(chaseeIndex);
@@ -105,7 +110,12 @@ public class GameManager : MonoBehaviour
 
             camLookPosition = playersInPlay[chaseeIndex].transform.position;
         }
-
+        if (currentGameState == GameState.CAUGHT_ANIMATION && stateChangedThisFrame) {
+            caughtPopupText.GameObject().SetActive(true);
+            caughtPopupText.localScale = Vector3.zero;
+            timeInGuiPopup = 0;
+            midPopupRan = false;
+        }
         if (currentGameState == GameState.WALKING)
         {
             //if it player angle is NOT equal to chosenPlayer * (2 pi / noOfPlayers)
@@ -160,11 +170,56 @@ public class GameManager : MonoBehaviour
 
         }
         if (currentGameState == GameState.CAUGHT_ANIMATION) {
-            camLookPosition = playersInPlay[chaseeIndex].transform.position;
+            timeInGuiPopup += Time.deltaTime;
+            caughtPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
+            if (!midPopupRan && timeInGuiPopup >= (3.141f / 4)) {
+                playersInPlay[chaseeIndex].setAsChasee();
+                playersInPlay[chaserIndex].evadedCapture();
+                chaserIndex = -1;
+                midPopupRan = true;
+            }
+            if (timeInGuiPopup >= (3.141f / 2))
+            {
+                setGameState(GameState.CHOOSING);
+                caughtPopupText.GameObject().SetActive(false);
+
+            } 
+        }
+        if (currentGameState == GameState.ESCAPE_ANIMATION && stateChangedThisFrame)
+        {
+            escapedPopupText.GameObject().SetActive(true);
+            escapedPopupText.localScale = Vector3.zero;
+            timeInGuiPopup = 0;
+            midPopupRan = false;
+        }
+        if (currentGameState == GameState.ESCAPE_ANIMATION)
+        {
+            timeInGuiPopup += Time.deltaTime;
+            escapedPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
+            if (!midPopupRan && timeInGuiPopup >= (3.141f / 4))
+            {
+                playersInPlay[chaserIndex].angleAtHome = playersInPlay[chaserIndex].angleAtHome;
+                playersInPlay[chaseeIndex].evadedCapture();
+                playersInPlay[chaserIndex].setAsChasee();
+                chaseeIndex = chaserIndex;
+                chaserIndex = -1;
+                midPopupRan = true;
+            }
+            if (timeInGuiPopup >= (3.141f / 2))
+            {
+                setGameState(GameState.CHOOSING);
+                escapedPopupText.GameObject().SetActive(false);
+
+            }
         }
         Camera.main.transform.LookAt(camLookPosition);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
 
+    }
+
+    private void LateUpdate()
+    {
+        if (stateChangedThisFrame) stateChangedThisFrame = false;
     }
 
     public void countKeyPress(int playerIndex) {

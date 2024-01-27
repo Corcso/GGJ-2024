@@ -16,10 +16,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float debugOffset;
     public float currentPlacementAngle;
 
-    private float angleAtHome;
+    public float angleAtHome;
 
     public bool inChase;
     public bool isChasee;
+
+    private int goHomeDirection;
 
     void Start()
     {
@@ -71,30 +73,70 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(Camera.main.transform.position);
             transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
 
-        }
-        if (gameManager.currentGameState == GameManager.GameState.CAUGHT_ANIMATION && inChase) {
-            if (isChasee) {
-                if (!(currentPlacementAngle % (2 * 3.1415f) > 6.23f || currentPlacementAngle % (2 * 3.1415f) < 0.05f)) {
-                    currentPlacementAngle += 0.3f * Time.deltaTime;
-                    transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
-                                            gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
-                                            (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
-                    transform.LookAt(Camera.main.transform.position);
-                    transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
-                }
-            }
-            else
-            { // IF LOGIC WRONG
-                if (!(currentPlacementAngle % (2 * 3.1415f) > angleAtHome - 0.05f || currentPlacementAngle % (2 * 3.1415f) < angleAtHome + 0.05f))
-                {
-                    currentPlacementAngle -= 0.3f * Time.deltaTime;
-                    transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
-                                            gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
-                                            (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
-                    transform.LookAt(Camera.main.transform.position);
-                    transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
-                }
+            if (currentPlacementAngle > angleAtHome + (2 * 3.141f)) {
+                gameManager.setGameState(GameManager.GameState.ESCAPE_ANIMATION);
             }
         }
+        //if (gameManager.currentGameState == GameManager.GameState.CAUGHT_ANIMATION && inChase && gameManager.stateChangedThisFrame)
+        //{
+        //    currentPlacementAngle = currentPlacementAngle % (2 * 3.141f);
+        //    if (isChasee) goHomeDirection = (currentPlacementAngle < angleAtHome) ? 1 : -1;
+        //}
+        //if (gameManager.currentGameState == GameManager.GameState.CAUGHT_ANIMATION && inChase) {
+
+            //    if (isChasee) {
+            //        if (!(currentPlacementAngle > 2 * 3.141f)) {
+            //            currentPlacementAngle += 0.3f * Time.deltaTime;
+            //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
+            //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
+            //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
+            //            transform.LookAt(Camera.main.transform.position);
+            //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+            //        }
+            //    }
+            //    else
+            //    { // IF LOGIC WRONG
+            //        if (!((currentPlacementAngle < angleAtHome && goHomeDirection == -1) || (currentPlacementAngle > angleAtHome && goHomeDirection == 1)))
+            //        {
+            //            currentPlacementAngle += 0.3f * Time.deltaTime * goHomeDirection;
+            //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
+            //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
+            //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
+            //            transform.LookAt(Camera.main.transform.position);
+            //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+            //        }
+            //    }
+            //}
+
     }
+
+    public void setAsChasee() {
+        currentPlacementAngle = 0;
+        timeSinceLastSpeedIncrease = 0;
+        timeSinceLastSpeedChange = 0;
+
+        isChasee = true;
+        inChase = false;
+
+        transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
+                                        0,
+                                        (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
+        transform.LookAt(Camera.main.transform.position);
+        transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+    }
+
+    public void evadedCapture() {
+        isChasee = false;
+        inChase = false;
+
+        currentPlacementAngle = angleAtHome;
+        timeSinceLastSpeedIncrease = 0;
+        timeSinceLastSpeedChange = 0;
+        transform.position = new Vector3((gameManager.sitRadius * Mathf.Sin(currentPlacementAngle)),
+                                        0,
+                                        (gameManager.sitRadius * Mathf.Cos(currentPlacementAngle)));
+        transform.LookAt(Camera.main.transform.position);
+        transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+    }
+ 
 }
