@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public float chaseMinDeceleration;
     [SerializeField] public float chaseDecelerationGradient;
     [SerializeField] GameObject choosingButtonPrefab;
+    [SerializeField] Transform choosingButtonPanel;
 
     // GUI Popups
     [SerializeField] RectTransform caughtPopupText;
@@ -78,6 +80,13 @@ public class GameManager : MonoBehaviour
         playersInPlay = new PlayerController[currentPlayerCount];
 
         //spawnPlayers();
+
+        for (int i = 0; i < (currentPlayerCount - 1) * 2; i++)
+        {
+            GameObject newButton = Instantiate(choosingButtonPrefab, choosingButtonPanel);
+            newButton.GetComponent<Button>().onClick.AddListener(delegate { chooseStepsToTake(i + 1); });
+            newButton.GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
+        }
     }
 
     // Update is called once per frame
@@ -160,6 +169,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
+
+        if (currentGameState == GameState.CHOOSING && stateChangedThisFrame)
+        {
+            choosingButtonPanel.gameObject.SetActive(true);
+
+            
+
+        }
         if (currentGameState == GameState.CAUGHT_ANIMATION) {
             timeInGuiPopup += Time.deltaTime;
             caughtPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
@@ -279,4 +296,13 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void chooseStepsToTake(int targetSteps)
+    {
+        setGameState(GameState.WALKING);
+        noOfDucks = 0;
+        chosenPlayer = targetSteps;
+        choosingButtonPanel.gameObject.SetActive(false);
+    }
+
 }
