@@ -83,8 +83,8 @@ public class PlayerController : MonoBehaviour
                     transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
                 }
             }
-            else if (!isChasee)
-            {
+            else
+            { // IF LOGIC WRONG
                 if (!(currentPlacementAngle % (2 * 3.1415f) > angleAtHome - 0.05f || currentPlacementAngle % (2 * 3.1415f) < angleAtHome + 0.05f))
                 {
                     currentPlacementAngle -= 0.3f * Time.deltaTime;

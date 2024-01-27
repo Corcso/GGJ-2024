@@ -580,17 +580,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 59c94b52736c3eb46bdb218dd8a65686,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 59c94b52736c3eb46bdb218dd8a65686,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 6
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 59c94b52736c3eb46bdb218dd8a65686,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 6
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 59c94b52736c3eb46bdb218dd8a65686,
         type: 3}
@@ -953,8 +953,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1354165883696129352, guid: 1ce9d4fe535790b42bd76cd40a8f3d72,
         type: 3}
+      propertyPath: inChase
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1354165883696129352, guid: 1ce9d4fe535790b42bd76cd40a8f3d72,
+        type: 3}
       propertyPath: debugOffset
-      value: 1.6
+      value: 3.14
       objectReference: {fileID: 0}
     - target: {fileID: 3512404702778078737, guid: 1ce9d4fe535790b42bd76cd40a8f3d72,
         type: 3}
