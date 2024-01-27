@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
         WALKING
     }
     public GameState currentGameState;
-    [SerializeField] bool stateChangedThisFrame; // Serialized field for now
+    public bool stateChangedThisFrame; // Serialized field for now
 
     // Player registry
     [SerializeField] GameObject[] playersToSpawnPrefabs;
@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] int noOfDucks = 0;
     [SerializeField] bool inMovingTransition;
     float angleMovedThisSegment;
+
+    Vector3 camLookPosition;
+
 
     // Chase Round
     public KeyCode[] chaseSceneKeys;
@@ -53,14 +56,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Set initial game state
-        currentGameState = GameState.CHOOSING;
+        currentGameState = GameState.CHASING;
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
         playersInPlay = new PlayerController[currentPlayerCount];
 
-        spawnPlayers();
+        //spawnPlayers();
     }
 
     // Update is called once per frame
@@ -73,12 +76,16 @@ public class GameManager : MonoBehaviour
 
                 assignNewKey(chaserIndex);
                 assignNewKey(chaseeIndex);
-            }
 
+                playersInPlay[chaserIndex].isChasee = false;
+                playersInPlay[chaseeIndex].isChasee = true;
+                playersInPlay[chaserIndex].inChase = true;
+                playersInPlay[chaseeIndex].inChase = true;
+            }
 
             // Chaser has caught chasee if they are overlapping
             if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle) {
-                currentGameState = GameState.CAUGHT_ANIMATION;
+                setGameState(GameState.CAUGHT_ANIMATION);
                 // Wipe chase keys
                 for (int i = 0; i < currentPlayerCount; i++)
                 {
@@ -86,6 +93,8 @@ public class GameManager : MonoBehaviour
                     numberOfConsecutivePresses[i] = 0;
                 }
             }
+
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
         }
 
         if (currentGameState == GameState.WALKING)
@@ -132,6 +141,13 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        if (currentGameState == GameState.CAUGHT_ANIMATION) {
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
+        }
+        Camera.main.transform.LookAt(camLookPosition);
+        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
+
     }
 
     public void countKeyPress(int playerIndex) {
@@ -184,7 +200,8 @@ public class GameManager : MonoBehaviour
             if (i != indexOfChasee)
             {
                 // Set player location and position
-                playerController.currentPlacementAngle = i * (2 * 3.1415f / (currentPlayerCount - 1));
+                int removeOne = (i > indexOfChasee) ? 1 : 0;
+                playerController.currentPlacementAngle = (i - removeOne) * (2 * 3.1415f / (currentPlayerCount - 1));
                 newPlayer.transform.position = new Vector3((sitRadius * Mathf.Sin(playerController.currentPlacementAngle)),
                                                 0,
                                                 (sitRadius * Mathf.Cos(playerController.currentPlacementAngle)));
@@ -192,10 +209,9 @@ public class GameManager : MonoBehaviour
                 newPlayer.transform.LookAt(Camera.main.transform.position);
             }
             else {
-                // Set player location and position; 
+                playerController.playerIndex = indexOfChasee;
                 playerController.currentPlacementAngle = 0;
                 newPlayer.transform.position = new Vector3(0, 0, chaseRadius);
-
                 newPlayer.transform.LookAt(Camera.main.transform.position);
             }
         }
