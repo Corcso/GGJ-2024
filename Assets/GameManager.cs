@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,12 +21,16 @@ public class GameManager : MonoBehaviour
     // Player registry
     [SerializeField] int currentPlayerCount;
     [SerializeField] PlayerController[] playersInPlay; // Serialized field for now
+    [SerializeField] Color[] coloursOfPlayers; // Serialized field for now
     [SerializeField] int chaserIndex;
     [SerializeField] int chaseeIndex;
 
     // Chase Round
     public KeyCode[] chaseSceneKeys;
     int[] numberOfConsecutivePresses;
+    [SerializeField] Transform chasePromptZone;
+    [SerializeField] GameObject playerMashPopupPrefab;
+    GameObject[] playerKeyPopups;
 
     // Game Settings
     [SerializeField] public float chaseRadius;
@@ -45,6 +50,7 @@ public class GameManager : MonoBehaviour
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
+        playerKeyPopups = new GameObject[currentPlayerCount];
     }
 
     // Update is called once per frame
@@ -104,6 +110,12 @@ public class GameManager : MonoBehaviour
         numberOfConsecutivePresses[playerIndex] = 0;
         Debug.Log(newKey.ToString());
 
+        Destroy(playerKeyPopups[playerIndex]);
+        GameObject newPopup = Instantiate(playerMashPopupPrefab, chasePromptZone);
+        newPopup.GetComponent<TextMeshProUGUI>().text = newKey.ToString();
+        newPopup.GetComponent<KeyPopupScript>().myKey = newKey;
+        newPopup.GetComponent<TextMeshProUGUI>().color = coloursOfPlayers[playerIndex];
+        playerKeyPopups[playerIndex] = newPopup;
     }
 
 }
