@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class CharacterSelection : MonoBehaviour
 {
 
     GameObject[] ducks;
-    int noOfPlayers = 0;
+    int noOfPlayers = 3;
+    [SerializeField] int playerSelectingNow = 0;
+    [SerializeField] TextMeshProUGUI txt;
 
     // Start is called before the first frame update
     void Start()
@@ -19,20 +23,54 @@ public class CharacterSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
-    public void buttonPressExample(GameObject prefabToAdd)
+    public void buttonPressDucks(GameObject prefabToAdd)
     {
-        Debug.Log("pressed");
 
-        for (int i = 0; i < noOfPlayers; i++)
+        if (playerSelectingNow < noOfPlayers)
         {
 
-            ducks[i].AddComponent<CharacterSelection>();
+            ducks[playerSelectingNow] = prefabToAdd;
+
 
         }
 
-        
+
+    }
+
+    public void playerPressed(TextMeshProUGUI selectedNotifier)
+    {
+
+        if (playerSelectingNow < noOfPlayers)
+        {
+
+            playerSelectingNow++;
+            selectedNotifier.text = playerSelectingNow.ToString();
+            selectedNotifier.transform.parent.GetComponent<Button>().interactable = false;
+
+            // Do some gui stuff to say who is selecting
+            txt.text = "Player " + playerSelectingNow.ToString() + " has chosen!";
+
+        }
+        else
+        {
+
+            txt.text = "All players have selected a character!";
+
+        }
+
+
+    }
+
+    public void buttonPressback()
+    {
+
+    }
+
+    public void buttonPressPlay()
+    {
+
     }
 }
