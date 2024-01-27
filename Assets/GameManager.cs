@@ -132,7 +132,8 @@ public class GameManager : MonoBehaviour
             if (i != indexOfChasee)
             {
                 // Set player location and position
-                playerController.currentPlacementAngle = i * (2 * 3.1415f / (currentPlayerCount - 1));
+                int removeOne = (i > indexOfChasee) ? 1 : 0;
+                playerController.currentPlacementAngle = (i - removeOne) * (2 * 3.1415f / (currentPlayerCount - 1));
                 newPlayer.transform.position = new Vector3((sitRadius * Mathf.Sin(playerController.currentPlacementAngle)),
                                                 0,
                                                 (sitRadius * Mathf.Cos(playerController.currentPlacementAngle)));
@@ -140,10 +141,9 @@ public class GameManager : MonoBehaviour
                 newPlayer.transform.LookAt(Camera.main.transform.position);
             }
             else {
-                // Set player location and position; 
+                playerController.playerIndex = indexOfChasee;
                 playerController.currentPlacementAngle = 0;
                 newPlayer.transform.position = new Vector3(0, 0, chaseRadius);
-
                 newPlayer.transform.LookAt(Camera.main.transform.position);
             }
         }
