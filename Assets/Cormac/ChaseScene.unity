@@ -1018,6 +1018,9 @@ MonoBehaviour:
   - {r: 0.6586611, g: 0.9339623, b: 0.14538093, a: 1}
   chaserIndex: 0
   chaseeIndex: 1
+  chosenPlayer: 0
+  noOfDucks: 0
+  inMovingTransition: 0
   chaseSceneKeys: 
   chasePromptZone: {fileID: 1648717266}
   playerMashPopupPrefab: {fileID: 4260290956012054665, guid: 9dbd75b71053319449b1ca39d422080c,
@@ -1030,8 +1033,12 @@ MonoBehaviour:
   chaseMaxAngSpeed: 6
   chaseMinDeceleration: 0.004
   chaseDecelerationGradient: 0.018
+  choosingButtonPrefab: {fileID: 0}
   caughtPopupText: {fileID: 1457288074}
   escapedPopupText: {fileID: 850549125}
+  backgroundMaterial: {fileID: 2100000, guid: 70a76ddc298e7ef4c9bffa1e217bba5d, type: 2}
+  backgroundTextures:
+  - {fileID: 2800000, guid: 18182f8eabaf1ab4a86e44e9449f6d78, type: 3}
 --- !u!4 &1942817172
 Transform:
   m_ObjectHideFlags: 0

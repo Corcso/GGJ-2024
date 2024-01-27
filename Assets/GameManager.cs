@@ -59,8 +59,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] RectTransform escapedPopupText;
     float timeInGuiPopup;
     bool midPopupRan;
+
+    // Background changing 
+    [SerializeField] Material backgroundMaterial;
+    [SerializeField] Texture[] backgroundTextures;
+
     void Start()
     {
+        // Change background texture, example
+        backgroundMaterial.mainTexture = backgroundTextures[0];
+
         // Set initial game state
         currentGameState = GameState.CHASING;
 
