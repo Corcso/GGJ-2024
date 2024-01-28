@@ -9,6 +9,7 @@ public class Menu : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI txt;
     [SerializeField] public int noOfPlayers = 3;
+    [SerializeField] GameObject tutorialBox;
     globalSettingsManager settingsManager;
 
     // Start is called before the first frame update
@@ -21,12 +22,6 @@ public class Menu : MonoBehaviour
     void Update()
     {
         
-    }
-
-    public void display(TextMeshProUGUI selectModifier)
-    {
-
-
     }
 
     public void lessPlayers()
@@ -63,7 +58,14 @@ public class Menu : MonoBehaviour
     public void OnHowToPlayButton()
     {
         // SceneManager.LoadScene(1);
+        tutorialBox.SetActive(true);
+        //Uncomment this to load how to play scene
+    }
 
+    public void CloseHowToPlayButton()
+    {
+        // SceneManager.LoadScene(1);
+        tutorialBox.SetActive(false);
         //Uncomment this to load how to play scene
     }
 

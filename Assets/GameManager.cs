@@ -76,6 +76,7 @@ public class GameManager : MonoBehaviour
         settingsManager = GameObject.Find("GLOBAL_SETTINGS").GetComponent<globalSettingsManager>();
         playersToSpawnPrefabs = settingsManager.playersToSpawnPrefabs;
         currentPlayerCount = settingsManager.currentPlayerCount;
+        coloursOfPlayers = settingsManager.playerColors;
     }
 
     void Start()

@@ -13,7 +13,6 @@ public class CharacterSelection : MonoBehaviour
     GameObject[] ducks;
     int noOfPlayers;
     [SerializeField] int playerSelectingNow = 0;
-    [SerializeField] TextMeshProUGUI txt;
     globalSettingsManager settingsManager;
 
     // Start is called before the first frame update
@@ -22,7 +21,9 @@ public class CharacterSelection : MonoBehaviour
         settingsManager = GameObject.Find("GLOBAL_SETTINGS").GetComponent<globalSettingsManager>();
         noOfPlayers = settingsManager.currentPlayerCount;
         ducks = new GameObject[noOfPlayers];
-        
+        settingsManager.playerColors = new Color[noOfPlayers];
+
+
     }
 
     // Update is called once per frame
@@ -53,17 +54,8 @@ public class CharacterSelection : MonoBehaviour
 
             playerSelectingNow++;
             selectedNotifier.text = playerSelectingNow.ToString();
+            settingsManager.playerColors[playerSelectingNow - 1] = selectedNotifier.color;
             selectedNotifier.transform.parent.GetComponent<Button>().interactable = false;
-
-            // Do some gui stuff to say who is selecting
-            txt.text = "Player " + playerSelectingNow.ToString() + " has chosen!";
-
-        }
-        else
-        {
-
-            txt.text = "All players have selected a character!";
-
         }
 
 
