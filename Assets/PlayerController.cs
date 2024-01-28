@@ -84,29 +84,29 @@ public class PlayerController : MonoBehaviour
         //}
         //if (gameManager.currentGameState == GameManager.GameState.CAUGHT_ANIMATION && inChase) {
 
-            //    if (isChasee) {
-            //        if (!(currentPlacementAngle > 2 * 3.141f)) {
-            //            currentPlacementAngle += 0.3f * Time.deltaTime;
-            //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
-            //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
-            //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
-            //            transform.LookAt(Camera.main.transform.position);
-            //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
-            //        }
-            //    }
-            //    else
-            //    { // IF LOGIC WRONG
-            //        if (!((currentPlacementAngle < angleAtHome && goHomeDirection == -1) || (currentPlacementAngle > angleAtHome && goHomeDirection == 1)))
-            //        {
-            //            currentPlacementAngle += 0.3f * Time.deltaTime * goHomeDirection;
-            //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
-            //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
-            //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
-            //            transform.LookAt(Camera.main.transform.position);
-            //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
-            //        }
-            //    }
-            //}
+        //    if (isChasee) {
+        //        if (!(currentPlacementAngle > 2 * 3.141f)) {
+        //            currentPlacementAngle += 0.3f * Time.deltaTime;
+        //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
+        //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
+        //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
+        //            transform.LookAt(Camera.main.transform.position);
+        //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+        //        }
+        //    }
+        //    else
+        //    { // IF LOGIC WRONG
+        //        if (!((currentPlacementAngle < angleAtHome && goHomeDirection == -1) || (currentPlacementAngle > angleAtHome && goHomeDirection == 1)))
+        //        {
+        //            currentPlacementAngle += 0.3f * Time.deltaTime * goHomeDirection;
+        //            transform.position = new Vector3((gameManager.chaseRadius * Mathf.Sin(currentPlacementAngle)),
+        //                                    gameManager.chaseBobAmp * Mathf.Sin(currentPlacementAngle / gameManager.chaseBobFreq) + gameManager.chaseBobAmp,
+        //                                    (gameManager.chaseRadius * Mathf.Cos(currentPlacementAngle)));
+        //            transform.LookAt(Camera.main.transform.position);
+        //            transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
+        //        }
+        //    }
+        //}
 
     }
 
@@ -138,5 +138,12 @@ public class PlayerController : MonoBehaviour
         transform.LookAt(Camera.main.transform.position);
         transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
     }
- 
+
+    [SerializeField] Sprite[] spriteFrames;
+    public enum SpriteFrameType { WALKING, RUNNING, STANDING, SITTING, PATTED};
+
+    public void setSprite(SpriteFrameType newSprite) { 
+        GetComponent<SpriteRenderer>().sprite = spriteFrames[(int)newSprite];
+    }
+
 }
