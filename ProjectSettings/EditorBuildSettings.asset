@@ -6,6 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Jerry/Title screen.unity
+    guid: 76092a15e5484d3469754ac2008d122c
+  - enabled: 1
+    path: Assets/Thomas/CharacterSelectionScene.unity
+    guid: bbd7b8a9df0b3ea43b35dede20a853cc
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
