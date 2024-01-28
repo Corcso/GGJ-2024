@@ -69,16 +69,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Change background texture, example
-        backgroundMaterial.mainTexture = backgroundTextures[0];
-
         // Set initial game state
         currentGameState = GameState.CHASING;
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
-        playersInPlay = new PlayerController[currentPlayerCount];
+        //playersInPlay = new PlayerController[currentPlayerCount];
 
         //spawnPlayers();
 
@@ -98,6 +95,8 @@ public class GameManager : MonoBehaviour
         {
             currentBackground = 0;
         }
+
+        backgroundMaterial.mainTexture = backgroundTextures[currentBackground];
     }
 
     // Update is called once per frame
