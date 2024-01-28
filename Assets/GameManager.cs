@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
     // Background changing 
     [SerializeField] Material backgroundMaterial;
     [SerializeField] Texture[] backgroundTextures;
+    [SerializeField] public int currentBackground = 0;
 
     void Start()
     {
@@ -86,6 +87,16 @@ public class GameManager : MonoBehaviour
             GameObject newButton = Instantiate(choosingButtonPrefab, choosingButtonPanel);
             newButton.GetComponent<Button>().onClick.AddListener(delegate { chooseStepsToTake(i + 1); });
             newButton.GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
+        }
+    }
+
+    void changeBackground()
+    {
+        currentBackground += 1;
+
+        if (currentBackground == 3)
+        {
+            currentBackground = 0;
         }
     }
 
