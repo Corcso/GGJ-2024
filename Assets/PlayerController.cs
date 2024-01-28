@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [SerializeField] Sprite[] spriteFrames;
-    public enum SpriteFrameType { WALKING, RUNNING, STANDING, SITTING, PATTED};
+    public enum SpriteFrameType { WALKING, RUNNING, PATTING, SITTING, PATTED};
 
     public void setSprite(SpriteFrameType newSprite) { 
         GetComponent<SpriteRenderer>().sprite = spriteFrames[(int)newSprite];

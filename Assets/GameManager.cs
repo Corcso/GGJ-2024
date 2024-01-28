@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int noOfDucks = 0;
     [SerializeField] bool inMovingTransition;
     float angleMovedThisSegment;
+    float timeOnPatAnimation;
 
     Vector3 camLookPosition;
 
@@ -69,6 +70,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] Texture[] backgroundTextures;
     [SerializeField] public int currentBackground = 0;
 
+    globalSettingsManager settingsManager;
+    void Awake()
+    {
+        settingsManager = GameObject.Find("GLOBAL_SETTINGS").GetComponent<globalSettingsManager>();
+        playersToSpawnPrefabs = settingsManager.playersToSpawnPrefabs;
+        currentPlayerCount = settingsManager.currentPlayerCount;
+    }
+
     void Start()
     {
         // Set initial game state
@@ -77,7 +86,7 @@ public class GameManager : MonoBehaviour
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
-        //playersInPlay = new PlayerController[currentPlayerCount];
+        playersInPlay = new PlayerController[currentPlayerCount];
 
         spawnPlayers();
 
@@ -117,6 +126,18 @@ public class GameManager : MonoBehaviour
             inMovingTransition = false;
             noOfDucks = 0;
             stateChangedThisFrame = false;
+            int closestChickenIndex = -1;
+            float closestChickenDistance = float.MaxValue;
+            for (int i = 0; i < currentPlayerCount; i++)
+            {
+                if (i == chaseeIndex) continue;
+                if (closestChickenDistance > Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position))
+                {
+                    closestChickenIndex = i;
+                    closestChickenDistance = Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position);
+                }
+            }
+            playersInPlay[closestChickenIndex].setSprite(PlayerController.SpriteFrameType.PATTED);
         }
         if (currentGameState == GameState.WALKING)
         {
@@ -125,11 +146,31 @@ public class GameManager : MonoBehaviour
             
             if (inMovingTransition == false)
             {
-                noOfDucks++;
-                Debug.Log(noOfDucks);
+                
                 //playersInPlay[chaseeIndex].currentPlacementAngle += (3.1415f * 2) / currentPlayerCount;
-                inMovingTransition = true;
-                angleMovedThisSegment = 0;
+                timeOnPatAnimation += Time.deltaTime;
+
+                if (timeOnPatAnimation >= 1.0f) { 
+                    inMovingTransition = true;
+                    angleMovedThisSegment = 0;
+                    noOfDucks++;
+                    Debug.Log(noOfDucks);
+                    playersInPlay[chaseeIndex].setSprite(PlayerController.SpriteFrameType.WALKING);
+                    int closestChickenIndex = -1;
+                    float closestChickenDistance = float.MaxValue;
+                    for (int i = 0; i < currentPlayerCount; i++)
+                    {
+                        if (i == chaseeIndex) continue;
+                        if (closestChickenDistance > Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position))
+                        {
+                            closestChickenIndex = i;
+                            closestChickenDistance = Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position);
+                        }
+                    }
+                    playersInPlay[closestChickenIndex].setSprite(PlayerController.SpriteFrameType.SITTING);
+
+                }
+                
                 //move it normally somehow?
                 //Maybe the above if statement could take place when the angle is equal to noOfDucks - 1
                 if ((noOfDucks == chosenPlayer))
@@ -161,6 +202,20 @@ public class GameManager : MonoBehaviour
                 if (angleMovedThisSegment >= (2 * 3.1415) / (currentPlayerCount - 1)){
                     inMovingTransition = false;
                     Debug.Log("MOVED SEGMENT");
+                    playersInPlay[chaseeIndex].setSprite(PlayerController.SpriteFrameType.PATTING);
+                    int closestChickenIndex = -1;
+                    float closestChickenDistance = float.MaxValue;
+                    for (int i = 0; i < currentPlayerCount; i++)
+                    {
+                        if (i == chaseeIndex) continue;
+                        if (closestChickenDistance > Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position))
+                        {
+                            closestChickenIndex = i;
+                            closestChickenDistance = Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position);
+                        }
+                    }
+                    playersInPlay[closestChickenIndex].setSprite(PlayerController.SpriteFrameType.PATTED);
+                    timeOnPatAnimation = 0;
                 }
                 
             }
@@ -179,6 +234,8 @@ public class GameManager : MonoBehaviour
             if (!midPopupRan && timeInGuiPopup >= (3.141f / 4)) {
                 playersInPlay[chaseeIndex].setAsChasee();
                 playersInPlay[chaserIndex].evadedCapture();
+                playersInPlay[chaseeIndex].setSprite(PlayerController.SpriteFrameType.PATTING);
+                playersInPlay[chaserIndex].setSprite(PlayerController.SpriteFrameType.SITTING);
                 chaserIndex = -1;
                 midPopupRan = true;
             }
@@ -196,6 +253,13 @@ public class GameManager : MonoBehaviour
             timeInGuiPopup = 0;
             midPopupRan = false;
             stateChangedThisFrame = false;
+            // Clear keys
+            for (int i = 0; i < currentPlayerCount; i++)
+            {
+                chaseSceneKeys[i] = KeyCode.None;
+                numberOfConsecutivePresses[i] = 0;
+                Destroy(playerKeyPopups[i]);
+            }
         }
         if (currentGameState == GameState.ESCAPE_ANIMATION)
         {
@@ -206,6 +270,8 @@ public class GameManager : MonoBehaviour
                 playersInPlay[chaseeIndex].angleAtHome = playersInPlay[chaserIndex].angleAtHome;
                 playersInPlay[chaseeIndex].evadedCapture();
                 playersInPlay[chaserIndex].setAsChasee();
+                playersInPlay[chaserIndex].setSprite(PlayerController.SpriteFrameType.PATTING);
+                playersInPlay[chaseeIndex].setSprite(PlayerController.SpriteFrameType.SITTING);
                 chaseeIndex = chaserIndex;
                 chaserIndex = -1;
                 midPopupRan = true;
@@ -236,6 +302,10 @@ public class GameManager : MonoBehaviour
                 playersInPlay[chaserIndex].currentPlacementAngle = -0.3f;
                 playersInPlay[chaserIndex].inChase = true;
                 playersInPlay[chaseeIndex].inChase = true;
+
+                playersInPlay[chaseeIndex].setSprite(PlayerController.SpriteFrameType.RUNNING);
+                playersInPlay[chaserIndex].setSprite(PlayerController.SpriteFrameType.RUNNING);
+
                 midPopupRan = true;
             }
             if (timeInGuiPopup >= (3.141f / 2))
@@ -353,6 +423,7 @@ public class GameManager : MonoBehaviour
                 playerController.currentPlacementAngle = 0;
                 newPlayer.transform.position = new Vector3(0, 0, chaseRadius);
                 newPlayer.transform.LookAt(Camera.main.transform.position);
+                playerController.setSprite(PlayerController.SpriteFrameType.PATTING);
             }
         }
     }

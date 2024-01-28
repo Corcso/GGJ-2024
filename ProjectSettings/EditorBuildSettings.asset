@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Thomas/CharacterSelectionScene.unity
     guid: bbd7b8a9df0b3ea43b35dede20a853cc
+  - enabled: 1
+    path: Assets/Cormac/ChaseScene.unity
+    guid: 1b697462b8e6a9c4cbbd68decc04c806
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

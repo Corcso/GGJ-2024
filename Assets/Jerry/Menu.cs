@@ -9,11 +9,12 @@ public class Menu : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI txt;
     [SerializeField] public int noOfPlayers = 3;
+    globalSettingsManager settingsManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        settingsManager = GameObject.Find("GLOBAL_SETTINGS").GetComponent<globalSettingsManager>();
     }
 
     // Update is called once per frame
@@ -35,13 +36,14 @@ public class Menu : MonoBehaviour
             noOfPlayers--;
         }
 
-        txt.text = "Amount of players: " + noOfPlayers.ToString();
+        txt.text = noOfPlayers.ToString();
        
     }
 
     public void playButton()
     {
 
+        settingsManager.currentPlayerCount = noOfPlayers;
         SceneManager.LoadScene(sceneBuildIndex: 1);
 
     }
@@ -53,7 +55,7 @@ public class Menu : MonoBehaviour
         {
             noOfPlayers++;
         }
-        txt.text = "Amount of players: " + noOfPlayers.ToString();
+        txt.text = noOfPlayers.ToString();
 
 
     }

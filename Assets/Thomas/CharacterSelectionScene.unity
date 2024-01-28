@@ -343,7 +343,8 @@ MonoBehaviour:
         m_MethodName: buttonPressDucks
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1160234425}
+          m_ObjectArgument: {fileID: 6870947007686617558, guid: d74e356ffb867714b899759f430009d0,
+            type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -734,7 +735,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 203919464}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 818431170}
+        m_TargetAssemblyTypeName: CharacterSelection, Assembly-CSharp
+        m_MethodName: buttonPressback
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &203919464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,7 +1411,8 @@ MonoBehaviour:
         m_MethodName: buttonPressDucks
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1160234425}
+          m_ObjectArgument: {fileID: 6870947007686617558, guid: e2b6ce7b7533aa548aecee198b0b4b25,
+            type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -2200,7 +2214,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 846227112}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 818431170}
+        m_TargetAssemblyTypeName: CharacterSelection, Assembly-CSharp
+        m_MethodName: buttonPressPlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &846227112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2396,7 +2422,8 @@ MonoBehaviour:
         m_MethodName: buttonPressDucks
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1160234425}
+          m_ObjectArgument: {fileID: 6870947007686617558, guid: 1353bd19ec03174408387f48eb192b74,
+            type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3142,7 +3169,8 @@ MonoBehaviour:
         m_MethodName: buttonPressDucks
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1160234425}
+          m_ObjectArgument: {fileID: 6870947007686617558, guid: b4a3cc295430b7c4cbc27bc89d068917,
+            type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3288,7 +3316,8 @@ MonoBehaviour:
         m_MethodName: buttonPressDucks
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1160234425}
+          m_ObjectArgument: {fileID: 6870947007686617558, guid: 37938494d91e4a142bafc81ee62491d9,
+            type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0

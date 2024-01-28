@@ -298,7 +298,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 20, y: 0}
-  m_Constraint: 0
+  m_Constraint: 2
   m_ConstraintCount: 2
 --- !u!114 &433625835
 MonoBehaviour:
@@ -372,8 +372,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 24.3}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -434.2, y: -272.9}
+  m_AnchoredPosition: {x: -1.1000366, y: 20.500015}
+  m_SizeDelta: {x: -436.39996, y: -393.40002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &850549126
 MonoBehaviour:
@@ -388,14 +388,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.17647058, g: 0.52752197, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ef25c8db1f10a2b478e7019b338455c1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -851,8 +851,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 24.3}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -434.2, y: -272.9}
+  m_AnchoredPosition: {x: 0, y: 2.2999878}
+  m_SizeDelta: {x: -434.2, y: -307.59998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1158838791
 MonoBehaviour:
@@ -867,14 +867,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.03938818, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4b6b2678f0e8e204285446e7d7a70ffd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -991,14 +991,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.1745283, b: 0.1745283, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c2f04196080ba5d4b8aaedbc4409da7e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1083,17 +1083,20 @@ MonoBehaviour:
   currentGameState: 0
   stateChangedThisFrame: 1
   playersToSpawnPrefabs:
-  - {fileID: 3512404702778078737, guid: 1ce9d4fe535790b42bd76cd40a8f3d72, type: 3}
-  - {fileID: 3512404702778078737, guid: 1ce9d4fe535790b42bd76cd40a8f3d72, type: 3}
-  - {fileID: 3512404702778078737, guid: 1ce9d4fe535790b42bd76cd40a8f3d72, type: 3}
-  - {fileID: 3512404702778078737, guid: 1ce9d4fe535790b42bd76cd40a8f3d72, type: 3}
-  currentPlayerCount: 4
+  - {fileID: 6870947007686617558, guid: 1353bd19ec03174408387f48eb192b74, type: 3}
+  - {fileID: 6870947007686617558, guid: d74e356ffb867714b899759f430009d0, type: 3}
+  - {fileID: 6870947007686617558, guid: 37938494d91e4a142bafc81ee62491d9, type: 3}
+  - {fileID: 6870947007686617558, guid: b4a3cc295430b7c4cbc27bc89d068917, type: 3}
+  - {fileID: 6870947007686617558, guid: e2b6ce7b7533aa548aecee198b0b4b25, type: 3}
+  currentPlayerCount: 5
   playersInPlay: []
   coloursOfPlayers:
-  - {r: 0.8490566, g: 0, b: 0.62819767, a: 1}
-  - {r: 0.6586611, g: 0.9339623, b: 0.14538093, a: 1}
-  - {r: 0.6586611, g: 0.9339623, b: 0.14538093, a: 1}
-  - {r: 0.6586611, g: 0.9339623, b: 0.14538093, a: 1}
+  - {r: 0.8509804, g: 0, b: 0.09379908, a: 1}
+  - {r: 1, g: 0.6693673, b: 0, a: 1}
+  - {r: 0.7546685, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0.96311355, b: 1, a: 1}
+  - {r: 0, g: 0.14640594, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.76815224, a: 1}
   chaserIndex: -1
   chaseeIndex: 1
   chosenPlayer: 0
@@ -1103,8 +1106,8 @@ MonoBehaviour:
   chasePromptZone: {fileID: 1648717266}
   playerMashPopupPrefab: {fileID: 4260290956012054665, guid: 9dbd75b71053319449b1ca39d422080c,
     type: 3}
-  chaseRadius: 10
-  sitRadius: 7
+  chaseRadius: 20
+  sitRadius: 15
   chaseBobAmp: 0.3
   chaseBobFreq: 0.3
   chaseMinAngSpeed: 1

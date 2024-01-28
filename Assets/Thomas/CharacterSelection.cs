@@ -11,14 +11,18 @@ public class CharacterSelection : MonoBehaviour
 {
 
     GameObject[] ducks;
-    int noOfPlayers = 3;
+    int noOfPlayers;
     [SerializeField] int playerSelectingNow = 0;
     [SerializeField] TextMeshProUGUI txt;
+    globalSettingsManager settingsManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        settingsManager = GameObject.Find("GLOBAL_SETTINGS").GetComponent<globalSettingsManager>();
+        noOfPlayers = settingsManager.currentPlayerCount;
         ducks = new GameObject[noOfPlayers];
+        
     }
 
     // Update is called once per frame
@@ -67,11 +71,12 @@ public class CharacterSelection : MonoBehaviour
 
     public void buttonPressback()
     {
-
+        SceneManager.LoadScene(sceneBuildIndex: 0);
     }
 
     public void buttonPressPlay()
     {
-
+        settingsManager.playersToSpawnPrefabs = ducks;
+        SceneManager.LoadScene(sceneBuildIndex: 2);
     }
 }
