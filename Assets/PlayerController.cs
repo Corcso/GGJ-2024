@@ -27,21 +27,21 @@ public class PlayerController : MonoBehaviour
     {
         timeSinceLastSpeedIncrease = 0;
         timeSinceLastSpeedChange = 0;
-        currentPlacementAngle = -debugOffset;
-        angleAtHome = -debugOffset;
+        //currentPlacementAngle = -debugOffset;
+        //angleAtHome = -debugOffset;
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Chase set up
-        if (gameManager.currentGameState == GameManager.GameState.CHASING && gameManager.stateChangedThisFrame && inChase)
-        {
-            angleAtHome = angleAtHome % (2 * 3.141f);
-        }
+        //// Chase set up
+        //if (gameManager.currentGameState == GameManager.GameState.CHASING && gameManager.stateChangedThisFrame && inChase)
+        //{
+        //    angleAtHome = angleAtHome % (2 * 3.141f);
+        //}
         // If currently in chase
-        if (gameManager.currentGameState == GameManager.GameState.CHASING && currentPlacementAngle < angleAtHome + (200 * 3.141f) && inChase)
+        if (gameManager.currentGameState == GameManager.GameState.CHASING && currentPlacementAngle < angleAtHome + (6 * 3.141f) && inChase)
         {
             // Incrase both the time since last change and the time since last speed increase
             timeSinceLastSpeedChange += Time.deltaTime;
@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(Camera.main.transform.position);
             transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
 
-            if (currentPlacementAngle > angleAtHome + (200 * 3.141f)) {
+            if (currentPlacementAngle > angleAtHome + (6 * 3.141f)) {
                 gameManager.setGameState(GameManager.GameState.ESCAPE_ANIMATION);
             }
         }
@@ -114,6 +114,7 @@ public class PlayerController : MonoBehaviour
         currentPlacementAngle = 0;
         timeSinceLastSpeedIncrease = 0;
         timeSinceLastSpeedChange = 0;
+        chaseAngularSpeed = gameManager.chaseMinAngSpeed;
 
         isChasee = true;
         inChase = false;
@@ -132,6 +133,7 @@ public class PlayerController : MonoBehaviour
         currentPlacementAngle = angleAtHome;
         timeSinceLastSpeedIncrease = 0;
         timeSinceLastSpeedChange = 0;
+        chaseAngularSpeed = gameManager.chaseMinAngSpeed;
         transform.position = new Vector3((gameManager.sitRadius * Mathf.Sin(currentPlacementAngle)),
                                         0,
                                         (gameManager.sitRadius * Mathf.Cos(currentPlacementAngle)));

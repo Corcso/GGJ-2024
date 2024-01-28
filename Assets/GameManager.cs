@@ -16,7 +16,8 @@ public class GameManager : MonoBehaviour
         CHASING,
         CAUGHT_ANIMATION,
         ESCAPE_ANIMATION,
-        WALKING
+        WALKING,
+        RUN_ANIMATION
     }
     public GameState currentGameState;
     public bool stateChangedThisFrame; // Serialized field for now
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
     // GUI Popups
     [SerializeField] RectTransform caughtPopupText;
     [SerializeField] RectTransform escapedPopupText;
+    [SerializeField] RectTransform runPopupText;
     float timeInGuiPopup;
     bool midPopupRan;
 
@@ -73,19 +75,20 @@ public class GameManager : MonoBehaviour
         backgroundMaterial.mainTexture = backgroundTextures[0];
 
         // Set initial game state
-        currentGameState = GameState.CHASING;
+        currentGameState = GameState.CHOOSING;
 
         chaseSceneKeys = new KeyCode[currentPlayerCount];
         numberOfConsecutivePresses = new int[currentPlayerCount];
         playerKeyPopups = new GameObject[currentPlayerCount];
         playersInPlay = new PlayerController[currentPlayerCount];
 
-        //spawnPlayers();
+        spawnPlayers();
 
         for (int i = 0; i < (currentPlayerCount - 1) * 2; i++)
         {
             GameObject newButton = Instantiate(choosingButtonPrefab, choosingButtonPanel);
-            newButton.GetComponent<Button>().onClick.AddListener(delegate { chooseStepsToTake(i + 1); });
+            int iPlusOne = i + 1;
+            newButton.GetComponent<Button>().onClick.AddListener(delegate { this.chooseStepsToTake(iPlusOne); });
             newButton.GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
         }
     }
@@ -103,90 +106,73 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentGameState == GameState.CHASING) {
-            // Perform chase set up if just happened
-            if (stateChangedThisFrame) { 
-
-                assignNewKey(chaserIndex);
-                assignNewKey(chaseeIndex);
-
-                playersInPlay[chaserIndex].isChasee = false;
-                playersInPlay[chaseeIndex].isChasee = true;
-                playersInPlay[chaserIndex].inChase = true;
-                playersInPlay[chaseeIndex].inChase = true;
-            }
-
-            // Chaser has caught chasee if they are overlapping
-            if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle) {
-                setGameState(GameState.CAUGHT_ANIMATION);
-                // Wipe chase keys
-                for (int i = 0; i < currentPlayerCount; i++)
-                {
-                    chaseSceneKeys[i] = KeyCode.None;
-                    numberOfConsecutivePresses[i] = 0;
-                }
-            }
-
-            camLookPosition = playersInPlay[chaseeIndex].transform.position;
-        }
+        
         if (currentGameState == GameState.CAUGHT_ANIMATION && stateChangedThisFrame) {
             caughtPopupText.GameObject().SetActive(true);
             caughtPopupText.localScale = Vector3.zero;
             timeInGuiPopup = 0;
             midPopupRan = false;
+            stateChangedThisFrame = false;
+        }
+        if (currentGameState == GameState.WALKING && stateChangedThisFrame) {
+            inMovingTransition = false;
+            noOfDucks = 0;
+            stateChangedThisFrame = false;
         }
         if (currentGameState == GameState.WALKING)
         {
-            //if it player angle is NOT equal to chosenPlayer * (2 pi / noOfPlayers)
-                //move player by 2 pi / noOfPlayers
-            //if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle)
-            //{
-            //    //change enum to chasing
-            //    currentGameState = GameState.CHASING;
-               
-            //}
-            if ((noOfDucks == chosenPlayer - 2) && !inMovingTransition)
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
+            
+            
+            if (inMovingTransition == false)
             {
-                //move chasee by 2 pi / noOfPlayers
-                currentGameState = GameState.CHASING;
+                noOfDucks++;
+                Debug.Log(noOfDucks);
+                //playersInPlay[chaseeIndex].currentPlacementAngle += (3.1415f * 2) / currentPlayerCount;
+                inMovingTransition = true;
+                angleMovedThisSegment = 0;
+                //move it normally somehow?
+                //Maybe the above if statement could take place when the angle is equal to noOfDucks - 1
+                if ((noOfDucks == chosenPlayer))
+                {
+                    setGameState(GameState.RUN_ANIMATION);
+                    int closestChickenIndex = -1;
+                    float closestChickenDistance = float.MaxValue;
+                    for (int i = 0; i < currentPlayerCount; i++) {
+                        if (i == chaseeIndex) continue;
+                        if (closestChickenDistance > Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position)) {
+                            closestChickenIndex = i;
+                            closestChickenDistance = Vector3.Distance(playersInPlay[chaseeIndex].transform.position, playersInPlay[i].transform.position);
+                        }
+                    }
+                    chaserIndex = closestChickenIndex;
+                }
             }
             else
             {
-                if (inMovingTransition == false)
-                {
-                    noOfDucks++;
-                    //playersInPlay[chaseeIndex].currentPlacementAngle += (3.1415f * 2) / currentPlayerCount;
-                    inMovingTransition = true;
-                    angleMovedThisSegment = 0;
-                    //move it normally somehow?
-                    //Maybe the above if statement could take place when the angle is equal to noOfDucks - 1
+                angleMovedThisSegment += (0.6f * Time.deltaTime);
+                playersInPlay[chaseeIndex].currentPlacementAngle += (0.6f * Time.deltaTime);
+                playersInPlay[chaseeIndex].transform.position = new Vector3((chaseRadius * Mathf.Sin(playersInPlay[chaseeIndex].currentPlacementAngle)),
+                                            0,
+                                            (chaseRadius * Mathf.Cos(playersInPlay[chaseeIndex].currentPlacementAngle)));
+
+                playersInPlay[chaseeIndex].transform.LookAt(Camera.main.transform.position);
+
+
+                if (angleMovedThisSegment >= (2 * 3.1415) / (currentPlayerCount - 1)){
+                    inMovingTransition = false;
+                    Debug.Log("MOVED SEGMENT");
                 }
-                else
-                {
-                    angleMovedThisSegment += (0.6f * Time.deltaTime);
-                    playersInPlay[chaseeIndex].currentPlacementAngle += (0.6f * Time.deltaTime);
-                    playersInPlay[chaseeIndex].transform.position = new Vector3((sitRadius * Mathf.Sin(playersInPlay[chaseeIndex].currentPlacementAngle)),
-                                                0,
-                                                (sitRadius * Mathf.Cos(playersInPlay[chaseeIndex].currentPlacementAngle)));
-
-                    playersInPlay[chaseeIndex].transform.LookAt(Camera.main.transform.position);
-
-
-                    if (angleMovedThisSegment >= (2 * 3.1415) / noOfDucks){
-                        inMovingTransition = false;
-                    }
-                    
-                }
+                
             }
+            
         }
 
 
         if (currentGameState == GameState.CHOOSING && stateChangedThisFrame)
         {
             choosingButtonPanel.gameObject.SetActive(true);
-
-            
-
+            stateChangedThisFrame = false;
         }
         if (currentGameState == GameState.CAUGHT_ANIMATION) {
             timeInGuiPopup += Time.deltaTime;
@@ -210,6 +196,7 @@ public class GameManager : MonoBehaviour
             escapedPopupText.localScale = Vector3.zero;
             timeInGuiPopup = 0;
             midPopupRan = false;
+            stateChangedThisFrame = false;
         }
         if (currentGameState == GameState.ESCAPE_ANIMATION)
         {
@@ -217,7 +204,7 @@ public class GameManager : MonoBehaviour
             escapedPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
             if (!midPopupRan && timeInGuiPopup >= (3.141f / 4))
             {
-                playersInPlay[chaserIndex].angleAtHome = playersInPlay[chaserIndex].angleAtHome;
+                playersInPlay[chaseeIndex].angleAtHome = playersInPlay[chaserIndex].angleAtHome;
                 playersInPlay[chaseeIndex].evadedCapture();
                 playersInPlay[chaserIndex].setAsChasee();
                 chaseeIndex = chaserIndex;
@@ -231,14 +218,76 @@ public class GameManager : MonoBehaviour
 
             }
         }
+        if (currentGameState == GameState.RUN_ANIMATION && stateChangedThisFrame)
+        {
+            runPopupText.GameObject().SetActive(true);
+            runPopupText.localScale = Vector3.zero;
+            timeInGuiPopup = 0;
+            midPopupRan = false;
+            stateChangedThisFrame = false;
+        }
+        if (currentGameState == GameState.RUN_ANIMATION)
+        {
+            timeInGuiPopup += Time.deltaTime;
+            runPopupText.localScale = Vector3.one * (2 * Mathf.Sin(4 * timeInGuiPopup - (3.141f / 2)) + 2);
+            if (!midPopupRan && timeInGuiPopup >= (3.141f / 4))
+            {
+                playersInPlay[chaserIndex].angleAtHome = playersInPlay[chaserIndex].currentPlacementAngle;
+                playersInPlay[chaseeIndex].setAsChasee();
+                playersInPlay[chaserIndex].currentPlacementAngle = -0.3f;
+                playersInPlay[chaserIndex].inChase = true;
+                playersInPlay[chaseeIndex].inChase = true;
+                midPopupRan = true;
+            }
+            if (timeInGuiPopup >= (3.141f / 2))
+            {
+                setGameState(GameState.CHASING);
+                runPopupText.GameObject().SetActive(false);
+
+            }
+        }
+        
+        if (currentGameState == GameState.CHASING)
+        {
+            // Perform chase set up if just happened
+            if (stateChangedThisFrame)
+            {
+
+                assignNewKey(chaserIndex);
+                assignNewKey(chaseeIndex);
+
+                playersInPlay[chaserIndex].isChasee = false;
+                playersInPlay[chaseeIndex].isChasee = true;
+                playersInPlay[chaserIndex].inChase = true;
+                playersInPlay[chaseeIndex].inChase = true;
+                playersInPlay[chaseeIndex].angleAtHome %= (2 * 3.141f);
+                playersInPlay[chaserIndex].angleAtHome %= (2 * 3.141f);
+
+                stateChangedThisFrame = false;
+            }
+
+            // Chaser has caught chasee if they are overlapping
+            if (playersInPlay[chaserIndex].currentPlacementAngle >= playersInPlay[chaseeIndex].currentPlacementAngle)
+            {
+                setGameState(GameState.CAUGHT_ANIMATION);
+                // Wipe chase keys
+                for (int i = 0; i < currentPlayerCount; i++)
+                {
+                    chaseSceneKeys[i] = KeyCode.None;
+                    numberOfConsecutivePresses[i] = 0;
+                    Destroy(playerKeyPopups[i]);
+                }
+            }
+
+            camLookPosition = playersInPlay[chaseeIndex].transform.position;
+        }
         Camera.main.transform.LookAt(camLookPosition);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0));
-
     }
 
     private void LateUpdate()
     {
-        if (stateChangedThisFrame) stateChangedThisFrame = false;
+        //if (stateChangedThisFrame) stateChangedThisFrame = false;
     }
 
     public void countKeyPress(int playerIndex) {
@@ -300,6 +349,7 @@ public class GameManager : MonoBehaviour
                 newPlayer.transform.LookAt(Camera.main.transform.position);
             }
             else {
+                chaseeIndex = indexOfChasee;
                 playerController.playerIndex = indexOfChasee;
                 playerController.currentPlacementAngle = 0;
                 newPlayer.transform.position = new Vector3(0, 0, chaseRadius);
