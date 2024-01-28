@@ -39,6 +39,13 @@ public class Menu : MonoBehaviour
        
     }
 
+    public void playButton()
+    {
+
+        SceneManager.LoadScene(sceneBuildIndex: 1);
+
+    }
+
     public void morePlayers()
     {
 
@@ -49,12 +56,6 @@ public class Menu : MonoBehaviour
         txt.text = "Amount of players: " + noOfPlayers.ToString();
 
 
-    }
-    public void OnPlayButton()
-    {
-       // SceneManager.LoadScene(1);
-
-        //Uncomment this to load game scene
     }
 
     public void OnHowToPlayButton()
