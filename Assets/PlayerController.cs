@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(Camera.main.transform.position);
             transform.rotation = Quaternion.Euler(new Vector3(0, transform.rotation.eulerAngles.y, 0));
 
-            if (currentPlacementAngle > angleAtHome + (2 * 3.141f)) {
+            if (currentPlacementAngle > angleAtHome + (200 * 3.141f)) {
                 gameManager.setGameState(GameManager.GameState.ESCAPE_ANIMATION);
             }
         }
